@@ -1,36 +1,34 @@
 package com.geekbrains.spring.web.controllers;
 
 import com.geekbrains.spring.web.score.Product;
-import com.geekbrains.spring.web.score.ProductRepository;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
+import com.geekbrains.spring.web.services.ProductService;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 
-@Controller
-@RequestMapping("/products")
+@RestController
 public class ProductController {
-    private ProductRepository productRepository;
+    private final ProductService productService;
 
-    public ProductController(ProductRepository productRepository) {
-        this.productRepository = productRepository;
+    public ProductController(ProductService productService) {
+        this.productService = productService;
     }
 
-    @GetMapping
-    public String getProduct(Model model){
-        model.addAttribute("product", productRepository.getAllProducts());
-        System.out.println(productRepository.getAllProducts());
-        return "product_range";
+
+    @GetMapping("/products")
+    public List<Product> getAllProduct(){
+        return productService.getAllProducts();
     }
 
-    @GetMapping("/{id}")
-    public String showProductPage(Model model, @PathVariable Long id){
-        Product product = productRepository.findById(id);
-        model.addAttribute("product", product);
-        System.out.println(product);
-        return "product_info_page";
+    @GetMapping("/products/delete/{id}")
+    public void deleteById(@PathVariable Long id){
+        productService.deleteById(id);
+    }
+
+    @GetMapping("/products/change_cost")
+    public void changeCost(@RequestParam Long productId, @RequestParam Integer delta){
+        productService.changeCost(productId, delta);
     }
 
 }
