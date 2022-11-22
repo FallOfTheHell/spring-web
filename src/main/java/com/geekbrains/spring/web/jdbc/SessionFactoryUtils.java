@@ -3,10 +3,9 @@ package com.geekbrains.spring.web.jdbc;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
-import org.springframework.stereotype.Component;
 
 
-@Component
+
 public class SessionFactoryUtils {
     private SessionFactory sessionFactory;
 
@@ -22,7 +21,6 @@ public class SessionFactoryUtils {
     public  void init(){
         sessionFactory = new Configuration()
                 .configure("hibernate.cfg.xml")
-                .addAnnotatedClass(ProductHib.class)
                 .buildSessionFactory();
     }
 }

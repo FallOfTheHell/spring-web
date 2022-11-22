@@ -1,13 +1,12 @@
 package com.geekbrains.spring.web.jdbc;
 
 
+import com.geekbrains.spring.web.client.Client;
 import org.hibernate.Session;
-import org.springframework.stereotype.Component;
 
 import java.util.List;
 
 
-@Component
 public class ProductDaoImpl implements ProductDao {
 
     private SessionFactoryUtils sessionFactoryUtils;
@@ -48,10 +47,23 @@ public class ProductDaoImpl implements ProductDao {
 
     @Override
     public ProductHib saveOrUpdate(ProductHib product) {
+        System.out.println("===============");
         Session session = sessionFactoryUtils.getSession();
         session.beginTransaction();
         session.saveOrUpdate(product);
         session.getTransaction().commit();
+        System.out.println("===============");
         return product;
     }
+
+    @Override
+    public void buyClient(Long id) {
+        Session session = sessionFactoryUtils.getSession();
+        session.beginTransaction();
+        ProductHib productHib = session.get(ProductHib.class, id);
+        System.out.println(productHib);
+        System.out.println(productHib.getClients());
+        session.getTransaction().commit();
+    }
+
 }

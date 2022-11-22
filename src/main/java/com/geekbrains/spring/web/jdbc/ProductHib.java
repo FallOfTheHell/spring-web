@@ -2,7 +2,10 @@ package com.geekbrains.spring.web.jdbc;
 
 
 
+import com.geekbrains.spring.web.client.Client;
+
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Table(name = "products")
@@ -19,9 +22,25 @@ public class ProductHib {
     @Column(name = "cost")
     private Integer cost;
 
+    @ManyToMany
+    @JoinTable(
+            name = "products_clients",
+            joinColumns = @JoinColumn(name = "product_id"),
+            inverseJoinColumns = @JoinColumn(name = "client_id")
+    )
+    private List<Client> clients;
+
     public ProductHib(String title, Integer cost) {
         this.title = title;
         this.cost = cost;
+    }
+
+    public List<Client> getClients() {
+        return clients;
+    }
+
+    public void setClients(List<Client> clients) {
+        this.clients = clients;
     }
 
     public ProductHib() {

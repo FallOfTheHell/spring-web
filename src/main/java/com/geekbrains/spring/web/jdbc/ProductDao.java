@@ -9,4 +9,5 @@ public interface ProductDao {
     List<ProductHib> findAll();
     void deleteById(Long id);
     ProductHib saveOrUpdate(ProductHib product);
+    void buyClient(Long id);
 }
