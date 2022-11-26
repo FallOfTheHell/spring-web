@@ -1,47 +1,24 @@
 package com.geekbrains.spring.web.score;
 
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import javax.annotation.PostConstruct;
 import java.util.*;
 
 @Repository
-public class ProductRepository {
+public interface ProductRepository extends JpaRepository<Product, Long> {
+    List<Product> findAllByCostBetween(Integer min, Integer max);
 
-    private List<Product> products;
+    @Query("select min(p.cost) from Product p")
+    List<Product> findLowCostProduct();
 
-    @PostConstruct
-    public void init(){
-        products = new ArrayList<>(List.of(
-                new Product(1L, "Milc", 1000),
-                new Product(2L, "Bad", 100),
-                new Product(3L, "Eggs", 200),
-                new Product(4L, "Eat", 810),
-                new Product(5L, "Cheese", 970)
-        ));
-        products.removeIf(s -> false);
-    }
+    @Query("select max(p.cost) from Product p")
+    List<Product> findMaxCostProduct();
 
-
-    public List<Product> getAllProducts() {
-        return Collections.unmodifiableList(products);
-    }
-
-    public Product findById(Long id) {
-        return products.stream()
-                .filter(s -> s.getId().equals(id))
-                .findFirst()
-                .orElseThrow(() -> new RuntimeException("Product not found"));
-    }
-
-
-    public void delProduct(Long id) {
-        products.removeIf(s -> s.getId().equals(id));
-    }
-
-    public void addProduct(Product p){
-        products.add(p);
-    }
+    @Query("select AVG(p.cost) from Product p")
+    List<Product> findAverageCostProduct();
 
 }
 
