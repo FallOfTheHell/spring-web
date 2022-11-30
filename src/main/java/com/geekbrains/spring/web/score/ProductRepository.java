@@ -11,14 +11,12 @@ import java.util.*;
 public interface ProductRepository extends JpaRepository<Product, Long> {
     List<Product> findAllByCostBetween(Integer min, Integer max);
 
-    @Query("select min(p.cost) from Product p")
-    List<Product> findLowCostProduct();
+    @Query("select p from Product p where p.cost < ?1")
+    List<Product> findLowCostProduct(Integer max);
 
-    @Query("select max(p.cost) from Product p")
-    List<Product> findMaxCostProduct();
+    @Query("select p from Product p where p.cost > ?1")
+    List<Product> findMaxCostProduct(Integer min);
 
-    @Query("select AVG(p.cost) from Product p")
-    List<Product> findAverageCostProduct();
-
+    List<Product> findProductByCostBetween(Integer min, Integer max);
 }
 

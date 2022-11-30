@@ -22,6 +22,16 @@ public class ProductController {
         return productService.findAll();
     }
 
+    @PostMapping("/products")
+    public Product saveProduct(@RequestBody Product product){
+        return productService.save(product);
+    }
+
+    @GetMapping("/products/filter_cost")
+    public List<Product> findProductByCostBetween(@RequestParam(defaultValue = "0") Integer min,@RequestParam(defaultValue = "3000") Integer max){
+        return productService.findProductByCostBetween(min, max);
+    }
+
     @GetMapping("/products/{id}")
     public Product getProductById(@PathVariable Long id){
         return productService.findById(id).orElseThrow(() -> new ResourceNotFoundExceptions("Product not found: " + id));
@@ -43,18 +53,15 @@ public class ProductController {
     }
 
     @GetMapping("/products/min_cost")
-    public List<Product> minCost(){
-        return productService.findLowCostProduct();
+    public List<Product> minCost(@RequestParam Integer min){
+        return productService.findLowCostProduct(min);
     }
 
     @GetMapping("/products/max_cost")
-    public List<Product> maxCost(){
-        return productService.findMaxCostProduct();
+    public List<Product> maxCost(@RequestParam Integer max){
+        return productService.findMaxCostProduct(max);
     }
 
-    @GetMapping("/products/agv_cost")
-    public List<Product> averageCost(){
-        return productService.findAverageCostProduct();
-    }
+
 
 }

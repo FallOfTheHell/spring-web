@@ -40,15 +40,19 @@ public class ProductService {
         return productRepository.findAllByCostBetween(min,max);
     }
 
-    public List<Product> findLowCostProduct(){
-        return productRepository.findLowCostProduct();
+    public List<Product> findLowCostProduct(Integer min){
+        return productRepository.findLowCostProduct(min);
     }
 
-    public List<Product> findMaxCostProduct(){
-        return productRepository.findMaxCostProduct();
+    public List<Product> findMaxCostProduct(Integer max){
+        return productRepository.findMaxCostProduct(max);
     }
 
-    public List<Product> findAverageCostProduct(){
-        return productRepository.findAverageCostProduct();
+    public Product save(Product product){
+       return productRepository.save(product);
+    }
+
+    public List<Product> findProductByCostBetween(Integer min, Integer max){
+        return productRepository.findProductByCostBetween(min, max);
     }
 }
