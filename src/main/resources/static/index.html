@@ -1,0 +1,59 @@
+<!doctype html>
+
+<html ng-app="app">
+
+<head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.0/angular.min.js"></script>
+    <script src="index.js"></script>
+</head>
+
+<body>
+
+<div class="container" ng-controller="indexController">
+    <h3>Список продуктов</h3>
+    <table class="table table-dark table-striped" cellpadding="0" cellspacing="0">
+        <tr>
+            <td>ID</td>
+            <td>Наименование</td>
+            <td>Цена</td>
+            <td>Действие</td>
+        </tr>
+        <tbody>
+        <tr ng-repeat="p in ProductsList">
+            <td>{{p.id}}</td>
+            <td>{{p.title}}</td>
+            <td>
+                <button class="btn btn-primary" ng-click="changeCost(p.id, -10)">-</button>
+                {{p.cost}}
+                <button class="btn btn-primary" ng-click="changeCost(p.id, 10)">+</button>
+            </td>
+            <td>
+                <button class="btn btn-outline-danger" ng-click="deleteProduct(p.id)">Удалить</button>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+    <p></p>
+    <h3>Добавить продукт</h3>
+    <form novalidate ng-submit="createProduct()">
+        <input class="form-control" type="text" placeholder="Наименование" ng-model="newProduct.title">
+        <p></p>
+        <input class="form-control" type="number" placeholder="Цена" ng-model="newProduct.cost">
+        <p></p>
+        <button type="submit" class="btn btn-primary">Добавить</button>
+    </form>
+    <h3>Отфильтровать продукт</h3>
+    <form novalidate ng-submit="filterProduct()">
+        <input class="form-control" type="text" placeholder="Минимальная цена" ng-model="minCostProduct.cost">
+        <p></p>
+        <input class="form-control" type="number" placeholder="Максимальная цена" ng-model="maxCostProduct.cost">
+        <p></p>
+        <button type="submit" class="btn btn-primary">Фильтровать</button>
+    </form>
+</div>
+</body>
+</html>
