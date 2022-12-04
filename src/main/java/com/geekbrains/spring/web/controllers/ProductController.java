@@ -3,12 +3,15 @@ package com.geekbrains.spring.web.controllers;
 import com.geekbrains.spring.web.exeptions.ResourceNotFoundExceptions;
 import com.geekbrains.spring.web.score.Product;
 import com.geekbrains.spring.web.services.ProductService;
+import dto.ProductDto;
+import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 
 @RestController
+@RequestMapping("/api/v1/products")
 public class ProductController {
     private final ProductService productService;
 
@@ -17,51 +20,50 @@ public class ProductController {
     }
 
 
-    @GetMapping("/products")
-    public List<Product> getAllProduct(){
-        return productService.findAll();
+    @GetMapping
+    public Page<ProductDto> getAllProduct(
+            @RequestParam(name = "p", defaultValue = "1") Integer page,
+            @RequestParam(name = "min_price", required = false) Integer minPrice,
+            @RequestParam(name = "max_price", required = false) Integer maxPrice,
+            @RequestParam(name = "name_part", required = false) String namePart
+    ){
+        if (page < 1){
+            page = 1;
+        }
+        return productService.find(maxPrice, minPrice, namePart, page).map(
+                ProductDto::new
+        );
     }
 
-    @PostMapping("/products")
-    public Product saveProduct(@RequestBody Product product){
-        return productService.save(product);
+    @PostMapping
+    public ProductDto saveNewProduct(@RequestBody ProductDto productDto){
+        productDto.setId(null);
+        productService.save(new Product(productDto.getId(), productDto.getTitle(),productDto.getCost()));
+        return productDto;
     }
 
-    @GetMapping("/products/filter_cost")
+    @PutMapping
+    public ProductDto updateProduct(@RequestBody ProductDto productDto){
+        Product product = productService.findById(productDto.getId()).get();
+        product.setTitle(productDto.getTitle());
+        product.setCost(productDto.getCost());
+        return productDto;
+    }
+
+    @GetMapping("/filter_cost")
     public List<Product> findProductByCostBetween(@RequestParam(defaultValue = "0") Integer min,@RequestParam(defaultValue = "3000") Integer max){
         return productService.findProductByCostBetween(min, max);
     }
 
-    @GetMapping("/products/{id}")
-    public Product getProductById(@PathVariable Long id){
-        return productService.findById(id).orElseThrow(() -> new ResourceNotFoundExceptions("Product not found: " + id));
+    @GetMapping("/{id}")
+    public ProductDto getProductById(@PathVariable Long id){
+        return new ProductDto(productService.findById(id).orElseThrow(() -> new ResourceNotFoundExceptions("Product not found: " + id)));
     }
 
-    @GetMapping("/products/delete/{id}")
+    @DeleteMapping("/{id}")
     public void deleteById(@PathVariable Long id){
         productService.deleteById(id);
     }
-
-    @GetMapping("/products/change_cost")
-    public void changeCost(@RequestParam Long productId, @RequestParam Integer delta){
-        productService.changeCost(productId, delta);
-    }
-
-    @GetMapping("/products/cost_between")
-    public List<Product> changeCost(@RequestParam(defaultValue = "0") Integer min, @RequestParam(defaultValue = "200") Integer max){
-        return productService.findByCostBetween(min, max);
-    }
-
-    @GetMapping("/products/min_cost")
-    public List<Product> minCost(@RequestParam Integer min){
-        return productService.findLowCostProduct(min);
-    }
-
-    @GetMapping("/products/max_cost")
-    public List<Product> maxCost(@RequestParam Integer max){
-        return productService.findMaxCostProduct(max);
-    }
-
 
 
 }

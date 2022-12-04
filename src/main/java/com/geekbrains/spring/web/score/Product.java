@@ -18,6 +18,22 @@ public class Product {
     @Column(name = "cost")
     private Integer cost;
 
+    @Column(name = "barcode")
+    private String barcode;
+
+    public String getBarcode() {
+        return barcode;
+    }
+
+    public void setBarcode(String barcode) {
+        this.barcode = barcode;
+    }
+
+    public Product(Long id, String title, Integer cost) {
+        this.id = id;
+        this.title = title;
+        this.cost = cost;
+    }
 
     public Product() {
     }
