@@ -1,9 +1,11 @@
 package com.geekbrains.spring.web.controllers;
 
+import com.geekbrains.spring.web.converters.ProductConverter;
 import com.geekbrains.spring.web.exeptions.ResourceNotFoundExceptions;
 import com.geekbrains.spring.web.score.Product;
 import com.geekbrains.spring.web.services.ProductService;
 import dto.ProductDto;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 
@@ -12,13 +14,10 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/products")
+@RequiredArgsConstructor
 public class ProductController {
     private final ProductService productService;
-
-    public ProductController(ProductService productService) {
-        this.productService = productService;
-    }
-
+    private final ProductConverter productConverter;
 
     @GetMapping
     public Page<ProductDto> getAllProduct(
@@ -30,24 +29,21 @@ public class ProductController {
         if (page < 1){
             page = 1;
         }
-        return productService.find(maxPrice, minPrice, namePart, page).map(
-                ProductDto::new
-        );
+        return productService.findAll(minPrice, maxPrice , namePart, page).map(
+                productConverter::entityToDto);
     }
 
     @PostMapping
     public ProductDto saveNewProduct(@RequestBody ProductDto productDto){
-        productDto.setId(null);
-        productService.save(new Product(productDto.getId(), productDto.getTitle(),productDto.getCost()));
-        return productDto;
+        Product product = productConverter.dtoToEntity(productDto);
+        product = productService.save(product);
+        return productConverter.entityToDto(product);
     }
 
     @PutMapping
     public ProductDto updateProduct(@RequestBody ProductDto productDto){
-        Product product = productService.findById(productDto.getId()).get();
-        product.setTitle(productDto.getTitle());
-        product.setCost(productDto.getCost());
-        return productDto;
+        Product product = productService.update(productDto);
+        return productConverter.entityToDto(product);
     }
 
     @GetMapping("/filter_cost")
@@ -57,7 +53,8 @@ public class ProductController {
 
     @GetMapping("/{id}")
     public ProductDto getProductById(@PathVariable Long id){
-        return new ProductDto(productService.findById(id).orElseThrow(() -> new ResourceNotFoundExceptions("Product not found: " + id)));
+        Product product = productService.findById(id).orElseThrow(() -> new ResourceNotFoundExceptions("Product not found: " + id));
+        return productConverter.entityToDto(product);
     }
 
     @DeleteMapping("/{id}")
