@@ -1,4 +1,4 @@
-package com.geekbrains.spring.web.score;
+package com.geekbrains.spring.web.entities;
 
 
 import lombok.AllArgsConstructor;

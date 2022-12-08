@@ -1,6 +1,6 @@
-package com.geekbrains.spring.web.services.specifications;
+package com.geekbrains.spring.web.repositories.specifications;
 
-import com.geekbrains.spring.web.score.Product;
+import com.geekbrains.spring.web.entities.Product;
 import org.springframework.data.jpa.domain.Specification;
 
 public class ProductSpecifications {

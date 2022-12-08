@@ -23,10 +23,30 @@
             <td>Действие</td>
         </tr>
         <tbody>
-        <tr ng-repeat="p in ProductsPage.content">
+        <tr ng-repeat="p in ProductsList.content">
             <td>{{p.id}}</td>
             <td>{{p.title}}</td>
             <td>{{p.cost}}</td>
+            <td>
+                <button class="btn btn-outline-danger" ng-click="deleteProduct(p.id)">Удалить</button>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+    <p></p>
+    <h3>Список продуктов</h3>
+    <table class="table table-dark table-striped" cellpadding="0" cellspacing="0">
+        <tr>
+            <td>ID</td>
+            <td>Наименование</td>
+            <td>Цена</td>
+            <td>Действие</td>
+        </tr>
+        <tbody>
+        <tr ng-repeat="c in CartList.content">
+            <td>{{c.id}}</td>
+            <td>{{c.title}}</td>
+            <td>{{c.cost}}</td>
             <td>
                 <button class="btn btn-outline-danger" ng-click="deleteProduct(p.id)">Удалить</button>
             </td>
@@ -44,9 +64,9 @@
     </form>
     <h3>Отфильтровать продукт</h3>
     <form novalidate ng-submit="filterProduct()">
-        <input class="form-control" type="text" placeholder="Минимальная цена" ng-model="minCostProduct.cost">
+        <input class="form-control" type="text" placeholder="Минимальная цена" ng-model="filter.min_price">
         <p></p>
-        <input class="form-control" type="number" placeholder="Максимальная цена" ng-model="maxCostProduct.cost">
+        <input class="form-control" type="number" placeholder="Максимальная цена" ng-model="filter.max_price">
         <p></p>
         <button type="submit" class="btn btn-primary">Фильтровать</button>
     </form>

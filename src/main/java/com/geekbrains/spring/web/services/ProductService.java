@@ -1,10 +1,10 @@
 package com.geekbrains.spring.web.services;
 
 import com.geekbrains.spring.web.exeptions.ResourceNotFoundExceptions;
-import com.geekbrains.spring.web.score.Product;
-import com.geekbrains.spring.web.score.ProductRepository;
-import com.geekbrains.spring.web.services.specifications.ProductSpecifications;
-import dto.ProductDto;
+import com.geekbrains.spring.web.entities.Product;
+import com.geekbrains.spring.web.repositories.ProductRepository;
+import com.geekbrains.spring.web.repositories.specifications.ProductSpecifications;
+import com.geekbrains.spring.web.dto.ProductDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -49,9 +49,6 @@ public class ProductService {
        return productRepository.save(product);
     }
 
-    public List<Product> findProductByCostBetween(Integer min, Integer max){
-        return productRepository.findProductByCostBetween(min, max);
-    }
 
     @Transactional
     public Product update(ProductDto productDto) {

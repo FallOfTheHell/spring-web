@@ -1,7 +1,6 @@
-package dto;
+package com.geekbrains.spring.web.dto;
 
 
-import com.geekbrains.spring.web.score.Product;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

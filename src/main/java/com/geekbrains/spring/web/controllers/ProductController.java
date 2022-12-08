@@ -2,9 +2,9 @@ package com.geekbrains.spring.web.controllers;
 
 import com.geekbrains.spring.web.converters.ProductConverter;
 import com.geekbrains.spring.web.exeptions.ResourceNotFoundExceptions;
-import com.geekbrains.spring.web.score.Product;
+import com.geekbrains.spring.web.entities.Product;
 import com.geekbrains.spring.web.services.ProductService;
-import dto.ProductDto;
+import com.geekbrains.spring.web.dto.ProductDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
@@ -44,11 +44,6 @@ public class ProductController {
     public ProductDto updateProduct(@RequestBody ProductDto productDto){
         Product product = productService.update(productDto);
         return productConverter.entityToDto(product);
-    }
-
-    @GetMapping("/filter_cost")
-    public List<Product> findProductByCostBetween(@RequestParam(defaultValue = "0") Integer min,@RequestParam(defaultValue = "3000") Integer max){
-        return productService.findProductByCostBetween(min, max);
     }
 
     @GetMapping("/{id}")
