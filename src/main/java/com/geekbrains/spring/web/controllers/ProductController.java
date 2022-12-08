@@ -1,36 +1,61 @@
 package com.geekbrains.spring.web.controllers;
 
-import com.geekbrains.spring.web.score.Product;
-import com.geekbrains.spring.web.score.ProductRepository;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
+import com.geekbrains.spring.web.converters.ProductConverter;
+import com.geekbrains.spring.web.exeptions.ResourceNotFoundExceptions;
+import com.geekbrains.spring.web.entities.Product;
+import com.geekbrains.spring.web.services.ProductService;
+import com.geekbrains.spring.web.dto.ProductDto;
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 
-@Controller
-@RequestMapping("/products")
+@RestController
+@RequestMapping("/api/v1/products")
+@RequiredArgsConstructor
 public class ProductController {
-    private ProductRepository productRepository;
-
-    public ProductController(ProductRepository productRepository) {
-        this.productRepository = productRepository;
-    }
+    private final ProductService productService;
+    private final ProductConverter productConverter;
 
     @GetMapping
-    public String getProduct(Model model){
-        model.addAttribute("product", productRepository.getAllProducts());
-        System.out.println(productRepository.getAllProducts());
-        return "product_range";
+    public Page<ProductDto> getAllProduct(
+            @RequestParam(name = "p", defaultValue = "1") Integer page,
+            @RequestParam(name = "min_price", required = false) Integer minPrice,
+            @RequestParam(name = "max_price", required = false) Integer maxPrice,
+            @RequestParam(name = "name_part", required = false) String namePart
+    ){
+        if (page < 1){
+            page = 1;
+        }
+        return productService.findAll(minPrice, maxPrice , namePart, page).map(
+                productConverter::entityToDto);
+    }
+
+    @PostMapping
+    public ProductDto saveNewProduct(@RequestBody ProductDto productDto){
+        Product product = productConverter.dtoToEntity(productDto);
+        product = productService.save(product);
+        return productConverter.entityToDto(product);
+    }
+
+    @PutMapping
+    public ProductDto updateProduct(@RequestBody ProductDto productDto){
+        Product product = productService.update(productDto);
+        return productConverter.entityToDto(product);
     }
 
     @GetMapping("/{id}")
-    public String showProductPage(Model model, @PathVariable Long id){
-        Product product = productRepository.findById(id);
-        model.addAttribute("product", product);
-        System.out.println(product);
-        return "product_info_page";
+    public ProductDto getProductById(@PathVariable Long id){
+        Product product = productService.findById(id).orElseThrow(() -> new ResourceNotFoundExceptions("Product not found: " + id));
+        return productConverter.entityToDto(product);
     }
+
+    @DeleteMapping("/{id}")
+    public void deleteById(@PathVariable Long id){
+        productService.deleteById(id);
+    }
+
 
 }
